@@ -11,6 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
 import { LocalAuthGuard } from 'src/auth/local.auth.guard';
 import { UsersService } from './users.service';
+import { UsersDto } from './dto/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -18,15 +19,12 @@ export class UsersController {
 
   //post/ signup
   @Post('/signup')
-  async addUser(
-    @Body('password') userPassword: string,
-    @Body('username') userName: string,
-  ) {
+  async addUser(@Body() userDto: UsersDto) {
     //hash password
-    const saltOrRounds = process.env.SALT_OR_ROUND;
-    const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
+    const saltOrRounds = 10;
+    userDto.password = await bcrypt.hash(userDto.password, saltOrRounds);
 
-    const result = await this.usersService.insertUser(userName, hashedPassword);
+    const result = await this.usersService.insertUser(userDto);
     return {
       msg: 'User successfully registered',
       userId: result.id,
@@ -38,7 +36,7 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Post('/login')
   login(@Request() req): any {
-    return { User: req.user, msg: 'User logged in' };
+    return { user: req.user, msg: 'User logged in' };
   }
 
   //Get / protected
