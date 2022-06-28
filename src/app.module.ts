@@ -10,7 +10,7 @@ import { RolesModule } from './roles/roles.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.development.env',
+      envFilePath: '.production.env',
       isGlobal: true,
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
