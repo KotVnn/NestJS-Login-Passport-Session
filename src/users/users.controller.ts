@@ -23,7 +23,7 @@ export class UsersController {
     @Body('username') userName: string,
   ) {
     //hash password
-    const saltOrRounds = 10;
+    const saltOrRounds = process.env.SALT_OR_ROUND;
     const hashedPassword = await bcrypt.hash(userPassword, saltOrRounds);
 
     const result = await this.usersService.insertUser(userName, hashedPassword);
